@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Lab1</string>
+    <string name="hello">My own App Demo</string>
+    <string name="button1">Exit </string>
+    <string name="button2">Show text editor </string>
+    <string name="button3">Apply background color</string>
+    <string name="button4">Hide and seek :)</string>
+    <string name="button5">Hide and seek :(</string>
+    <string name="color">Pick color: red, green, blue, yellow, magenta, gray, while, black</string>
+</resources>

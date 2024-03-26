@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/text_hello_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="@string/Hello"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/Color_pick"
+        android:inputType="textCapSentences|textAutoCorrect"
+        android:minHeight="48dp"
+        android:autofillHints=""
+        tools:ignore="VisualLintTextFieldSize" />
+
+    <TextView
+        android:id="@+id/text_space_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint='@string/space'
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/apply_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Button1"
+        tools:ignore="VisualLintButtonSize" />
+
+    <Button
+        android:id="@+id/home_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Button2"
+        tools:ignore="VisualLintButtonSize" />
+
+</LinearLayout>
+

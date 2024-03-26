@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">First</string>
+    <string name="Color_pick">Pick background color</string>
+    <string name="Hello">\n Hello! \n\n</string>
+    <string name="space">Available colors: red, green, blue, yellow, magenta, gray, while, black \n </string>
+    <string name="Button1">Apply </string>
+    <string name="Button2">Home </string>
+</resources>
