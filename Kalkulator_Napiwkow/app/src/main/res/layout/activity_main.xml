@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/App_title"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/name_app"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textCost"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="@string/costs"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/App_title" />
+
+    <EditText
+        android:id="@+id/etCosts"
+        android:layout_width="190dp"
+        android:layout_height="57dp"
+        android:inputType="numberDecimal"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textCost" />
+
+    <TextView
+        android:id="@+id/textKelnerRate"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="@string/kelner_rating"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etCosts" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:numStars="5"
+        android:stepSize="0.5"
+        android:theme="@style/Widget.AppCompat.RatingBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textKelnerRate" />
+
+    <TextView
+        android:id="@+id/textFoodRate"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:text="@string/food_rating"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ratingBar" />
+
+    <RadioGroup
+        android:id="@+id/foodGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textFoodRate">
+
+        <RadioButton
+            android:id="@+id/radioButton6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Yes" />
+
+        <RadioButton
+            android:id="@+id/radioButton7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/No" />
+
+        <RadioButton
+            android:id="@+id/radioButton8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/IDK" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/percentBase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/percent_base"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/foodGroup" />
+
+    <RadioGroup
+        android:id="@+id/percentRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/percentBase">
+
+        <RadioButton
+            android:id="@+id/percentButton5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/percent5"
+            app:layout_constraintEnd_toStartOf="@id/percentButton10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/percentBase" />
+
+        <RadioButton
+            android:id="@+id/percentButton10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/percent10"
+            app:layout_constraintEnd_toStartOf="@id/percentButton15"
+            app:layout_constraintStart_toEndOf="@id/percentButton5"
+            app:layout_constraintTop_toBottomOf="@id/percentBase" />
+
+        <RadioButton
+            android:id="@+id/percentButton15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/percent15"
+            app:layout_constraintEnd_toStartOf="@id/ownPercent"
+            app:layout_constraintStart_toEndOf="@id/percentButton10"
+            app:layout_constraintTop_toBottomOf="@id/percentBase" />
+
+        <RadioButton
+            android:id="@+id/ownPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/own_percent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/percentButton15"
+            app:layout_constraintTop_toBottomOf="@id/percentBase" />
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/ownPercentText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/own_percent"
+        android:inputType="number"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/percentRadioGroup" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="206dp"
+        android:layout_height="55dp"
+        android:onClick="onClickCalculate"
+        android:text="@string/calculate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ownPercentText" />
+
+    <TextView
+        android:id="@+id/textNapiwek"
+        android:layout_width="207dp"
+        android:layout_height="87dp"
+        android:text="@string/napiwek"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

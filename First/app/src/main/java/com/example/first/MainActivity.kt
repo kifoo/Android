@@ -28,6 +28,7 @@ class MainActivity : Activity() {
     private var txtSpyBox: TextView? = null
     private var myScreen: LinearLayout? = null
     private val PREFNAME = "myPrefFile1"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //display the main screen

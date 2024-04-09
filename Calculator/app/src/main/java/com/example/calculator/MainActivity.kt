@@ -12,10 +12,10 @@ class MainActivity : AppCompatActivity() {
 
     private var isNewOp=true
     private var dot=false
-    private var op="X"
+    private var operator="X"
     private var oldNumber=""
 
-    private var etShowNumber: EditText? = null
+    private var ShowNumber: EditText? = null
     private var button0: Button? = null
     private var button1: Button? = null
     private var button2: Button? = null
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        etShowNumber = findViewById<EditText>(R.id.etShowNumber) as EditText
+        ShowNumber = findViewById<EditText>(R.id.etShowNumber) as EditText
         button0 = findViewById<Button>(R.id.button0) as Button
         button1 = findViewById<Button>(R.id.button1) as Button
         button2 = findViewById<Button>(R.id.button2) as Button
@@ -61,11 +61,11 @@ class MainActivity : AppCompatActivity() {
     {
         if(this.isNewOp)
         {
-            etShowNumber?.setText("")
+            ShowNumber?.setText("")
         }
         this.isNewOp = false
         val buttonSelect= view as Button
-        var buttonClickValue = this.etShowNumber?.text.toString()
+        var buttonClickValue = this.ShowNumber?.text.toString()
         when(buttonSelect.id)
         {
             button0?.id->
@@ -121,41 +121,41 @@ class MainActivity : AppCompatActivity() {
                 buttonClickValue= "-$buttonClickValue"
             }
         }
-        etShowNumber?.setText(buttonClickValue)
+        ShowNumber?.setText(buttonClickValue)
     }
 
-    fun OpEvent(view: View)
+    fun OperatorEvent(view: View)
     {
         val buttonSelect = view as Button
         when(buttonSelect.id)
         {
             buttonMul?.id->
             {
-                op="X"
+                operator="X"
             }
             buttonDiv?.id->
             {
-                op="÷"
+                operator="÷"
             }
             buttonSub?.id->
             {
-                op="-"
+                operator="-"
             }
             buttonSum?.id->
             {
-                op="+"
+                operator="+"
             }
         }
-        oldNumber= etShowNumber?.text.toString()
+        oldNumber= ShowNumber?.text.toString()
         isNewOp=true
         dot=false
     }
 
     fun EqualEvent(view: View)
     {
-        val newNumber=etShowNumber?.text.toString()
+        val newNumber=ShowNumber?.text.toString()
         var finalNumber:Double?=null
-        when(op)
+        when(operator)
         {
             "X"->
             {
@@ -174,20 +174,20 @@ class MainActivity : AppCompatActivity() {
                 finalNumber=oldNumber.toDouble() + newNumber.toDouble()
             }
         }
-        etShowNumber?.setText(finalNumber.toString())
+        ShowNumber?.setText(finalNumber.toString())
         isNewOp=true
     }
 
     fun buttonPercentEvent(view: View)
     {
-        val number=(etShowNumber?.text.toString().toDouble())/100
-        etShowNumber?.setText(number.toString())
+        val number=(ShowNumber?.text.toString().toDouble())/100
+        ShowNumber?.setText(number.toString())
         isNewOp=true
     }
 
     fun buttonCleanEvent(view: View)
     {
-        etShowNumber?.setText("")
+        ShowNumber?.setText("")
         isNewOp=true
         dot=false
     }

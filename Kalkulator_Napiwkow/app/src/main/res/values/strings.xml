@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Kalkulator_Napiwkow</string>
+    <string name="name_app">\nKalkulator Napiwków</string>
+    <string name="costs">\nKoszt zamówionego jedzenia:</string>
+    <string name="kelner_rating">Ocena obsługi \n  0 - 5 (0 = słaba obsługa, 5 = bardzo dobra obsługa)</string>
+    <string name="food_rating">\nOcena jedzenia\nCzy jedzenie było smaczne?</string>
+    <string name="Yes">Tak  </string>
+    <string name="No">Nie  </string>
+    <string name="IDK">Nie mam zdania</string>
+    <string name="percent_base">\nPodstawowa stawka procentowa wynosi 5%.\nCzy chcesz zmienić podstawową stawkę?</string>
+    <string name="percent5">5  </string>
+    <string name="percent10">10  </string>
+    <string name="percent15">15  </string>
+    <string name="own_percent">Stawka własna </string>
+    <string name="amount">Wprowadź wartość stawki</string>
+    <string name="calculate">Policz</string>
+    <string name="napiwek">Wartość napiwku\n</string>
+</resources>

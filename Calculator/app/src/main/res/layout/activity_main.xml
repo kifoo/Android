@@ -23,7 +23,7 @@
         android:ems="10"
         android:gravity="end|bottom"
         android:inputType="textPersonName"
-        android:text=""
+        android:text="@string/_0"
         android:textColor="@color/white"
         android:textSize="36sp"
         tools:ignore="LabelFor,TextFields" />
@@ -81,7 +81,7 @@
                 android:layout_height="30pt"
                 android:layout_weight="1"
                 android:background="@color/orange"
-                android:onClick="OpEvent"
+                android:onClick="OperatorEvent"
                 android:text="@string/devide"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -135,7 +135,7 @@
                 android:layout_height="30pt"
                 android:layout_weight="1"
                 android:background="@color/orange"
-                android:onClick="OpEvent"
+                android:onClick="OperatorEvent"
                 android:text="@string/x"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -189,7 +189,7 @@
                 android:layout_height="30pt"
                 android:layout_weight="1"
                 android:background="@color/orange"
-                android:onClick="OpEvent"
+                android:onClick="OperatorEvent"
                 android:text="@string/_minus"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -243,7 +243,7 @@
                 android:layout_height="30pt"
                 android:layout_weight="1"
                 android:background="@color/orange"
-                android:onClick="OpEvent"
+                android:onClick="OperatorEvent"
                 android:text="@string/_plus"
                 android:textColor="@color/white"
                 android:textSize="18sp"
@@ -297,4 +297,10 @@
             android:textSize="18sp"
             tools:ignore="ButtonStyle,TextContrastCheck" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
 </LinearLayout>
