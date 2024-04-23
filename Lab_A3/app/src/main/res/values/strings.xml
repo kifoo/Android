@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Lab_A3</string>
     <string name="name_app"> Lab A3 </string>
+    <string name="setting_btn">Go to settings</string>
+    <string name="hint_text_x"> Latitude  </string>
+    <string name="hint_text_y"> Longitude  </string>
+    <string name="map_search"> Go to map </string>
+    <string name="photo_text"> Take a photo </string>
+    <string name="btn_action"> Search </string>
 </resources>

@@ -1,23 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".MainActivity">
+
     <TextView
-    android:id="@+id/App_title"
-    android:layout_width="wrap_content"
-    android:layout_height="50dp"
-    android:fontFamily="sans-serif"
-    android:text="@string/name_app"
-    android:textAlignment="center"
-    android:textSize="20sp"
-    android:textStyle="bold|italic"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/appTitle"
+        android:layout_width="87dp"
+        android:layout_height="28dp"
+        android:fontFamily="sans-serif"
+        android:text="@string/name_app"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="buttonGoToSettings"
+        android:text="@string/setting_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appTitle" />
+
+
+    <EditText
+        android:id="@+id/etLocationX"
+        android:layout_width="190dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="20dp"
+        android:autofillHints=""
+        android:hint="@string/hint_text_x"
+        android:inputType="numberDecimal"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/etLocationY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSettings" />
+
+    <EditText
+        android:id="@+id/etLocationY"
+        android:layout_width="190dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="20dp"
+        android:autofillHints=""
+        android:hint="@string/hint_text_y"
+        android:inputType="numberDecimal"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/etLocationX"
+        app:layout_constraintTop_toBottomOf="@id/btnSettings" />
+
+    <Button
+        android:id="@+id/btnMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:onClick="showMap"
+        android:text="@string/map_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etLocationY" />
+
+    <Button
+        android:id="@+id/btnPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:onClick="onBtnPhotoClickAction"
+        android:text="@string/photo_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnMap" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="321dp"
+        android:layout_height="315dp"
+        android:layout_marginTop="20dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnPhoto"
+        tools:srcCompat="@tools:sample/avatars" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
