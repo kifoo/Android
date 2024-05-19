@@ -12,8 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Lab4A"
         tools:targetApi="31">
-        <activity
-            android:name=".MainActivity"
+        <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+<!--        <receiver android:name=".BatteryBroadcastReceiver"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.BATTERY_LOW" />-->
+<!--                <action android:name="android.intent.action.BATTERY_OKAY" />-->
+<!--                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />-->
+<!--                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
     </application>
 
 </manifest>
