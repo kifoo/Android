@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,12 +19,17 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Done
+import androidx.compose.material.icons.twotone.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -79,6 +85,7 @@ fun AddGroupScreen(activity: MainActivity, navController: NavController){
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddGroupForm(activity: MainActivity,
                  navController: NavController,
@@ -89,6 +96,15 @@ fun AddGroupForm(activity: MainActivity,
                  selectedContacts: MutableState<List<Contact>>
 ){
     val localContext = LocalContext.current
+    var showEnterContactRow = rememberSaveable { mutableStateOf(false) }
+    var contactManualNumber = rememberSaveable { mutableStateOf("") }
+    var contactManualName = rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        contactManualNumber.value = ""
+        contactManualName.value = ""
+        showEnterContactRow.value = false
+    }
 
     Box(modifier = Modifier
         .padding(padding)
@@ -108,7 +124,8 @@ fun AddGroupForm(activity: MainActivity,
                         groupName.value = newValue
                     },
                     label = { Text("Group name: ") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.LightBrown4), unfocusedContainerColor = colorResource(R.color.LightBrown4))
                 )
             }
             Row(
@@ -121,7 +138,8 @@ fun AddGroupForm(activity: MainActivity,
                     },
                     label = { Text("Phone Number to track: ") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.LightBrown4), unfocusedContainerColor = colorResource(R.color.LightBrown4))
                 )
             }
             Row(
@@ -133,7 +151,8 @@ fun AddGroupForm(activity: MainActivity,
                         messageCharacters.value = newValue
                     },
                     label = { Text("Message characters to track: ") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.LightBrown4), unfocusedContainerColor = colorResource(R.color.LightBrown4))
                 )
             }
             Row(
@@ -151,6 +170,77 @@ fun AddGroupForm(activity: MainActivity,
                     }
                 }) {
                     Text("Choose contacts")
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(onClick = {
+                    showEnterContactRow.value = !showEnterContactRow.value
+                }) {
+                    Text("Enter Contact")
+                }
+            }
+            if (showEnterContactRow.value) {
+                Spacer(modifier = Modifier.padding(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    TextField(
+                        value = contactManualName.value,
+                        onValueChange = { newValue ->
+                            contactManualName.value = newValue
+                        },
+                        label = { Text("Enter Contact Name: ") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = colorResource(R.color.LightBrown4),
+                            unfocusedContainerColor = colorResource(R.color.LightBrown4)
+                        )
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ){
+                    TextField(
+                        value = contactManualNumber.value,
+                        onValueChange = { newValue ->
+                            contactManualNumber.value = newValue
+                        },
+                        label = { Text("Enter Contact Number: ") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = TextFieldDefaults.colors(focusedContainerColor = colorResource(R.color.LightBrown4), unfocusedContainerColor = colorResource(R.color.LightBrown4))
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    IconButton(
+                        onClick = {
+                            val newContact =
+                                Contact(contactManualName.value, contactManualNumber.value)
+                            activity.selectedContacts.value += newContact
+                            contactManualName.value = ""
+                            contactManualNumber.value = ""
+                        },
+                        modifier = Modifier.padding(8.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = colorResource(
+                                R.color.DarkBrown2
+                            )
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.TwoTone.Add,
+                            contentDescription = "Add contact",
+                            tint = colorResource(R.color.LightBrown4)
+                        )
+                    }
                 }
             }
             Box(
@@ -205,6 +295,7 @@ fun BottomNavigationAddGroupBar(activity: MainActivity,
             alwaysShowLabel = true,
             selected = currentRoute == "home",
             onClick = {
+                activity.selectedContacts.value = emptyList()
                 navController.navigate("home") {
                     navController.graph.startDestinationRoute?.let { route ->
                         popUpTo(route) {

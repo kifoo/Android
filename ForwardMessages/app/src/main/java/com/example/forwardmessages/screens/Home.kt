@@ -72,9 +72,13 @@ fun GroupsList(activity: MainActivity, navController: NavHostController){
     Box(
         modifier = Modifier.fillMaxSize()
     ){
-        LazyColumn(){
-            items(groups){group ->
-                GroupItem(group, navController)
+        Column() {
+            Box() {
+                LazyColumn() {
+                    items(groups) { group ->
+                        GroupItem(group, navController)
+                    }
+                }
             }
         }
     }
@@ -93,7 +97,7 @@ fun GroupItem(group: Group, navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Row(){
-                Text("${group.name.uppercase()} -> ID:${group.id}",
+                Text(group.name,
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorResource(R.color.DarkBrown)
                 )
@@ -138,5 +142,4 @@ fun GroupItem(group: Group, navController: NavHostController) {
             }
         }
     }
-    // TODO("Not yet implemented")
 }

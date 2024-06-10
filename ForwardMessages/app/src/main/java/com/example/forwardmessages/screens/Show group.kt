@@ -1,5 +1,6 @@
 package com.example.forwardmessages
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,23 +20,28 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
-
-// TODO add enable disable button
 @Composable
 fun ShowGroupScreen(activity: MainActivity, navController: NavHostController, groupId: Int){
     Scaffold(
-        topBar = { TopBar(activity) },
+        topBar = {
+            TopBar(activity)
+                 },
         content = { padding ->
             Box(modifier = Modifier
                 .padding(padding)
@@ -48,28 +54,43 @@ fun ShowGroupScreen(activity: MainActivity, navController: NavHostController, gr
     )
 }
 
-
 @Composable
 fun GroupInfo(activity: MainActivity, groupId: Int){
     val group = activity.getGroup(groupId).collectAsState(initial = null).value
-    val groupsWithCondition = activity.getGroupListByConditions("", "884182605").collectAsState(initial = null).value
-
     val contacts = activity.getContacts(groupId).collectAsState(initial = emptyList()).value
+
     if(group != null) {
+        var enabledGroup by remember { mutableStateOf(group.enabled)}
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(colorResource(R.color.LightBrown3))
         ){
-            Column() {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Spacer(modifier = Modifier.padding(16.dp))
                     Text(group.name.uppercase(),
-                        color = colorResource(R.color.DarkBrown)
+                        color = colorResource(R.color.DarkBrown),
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.weight(1f),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 2
+                    )
+                    Switch(
+                        checked = enabledGroup,
+                        onCheckedChange = {
+                            enabledGroup = it
+                            activity.updateGroupEnabled(group, it)
+                            Toast.makeText(activity, "Group enabled: $it", Toast.LENGTH_SHORT).show()
+                        }
                     )
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
@@ -154,11 +175,9 @@ fun BottomNavGroupInfoBar(navController: NavController, groupId: Int) {
                 navController.navigate("home") {
                     navController.graph.startDestinationRoute?.let { route ->
                         popUpTo(route) {
-//                            saveState = true
                         }
                     }
                     launchSingleTop = true
-//                    restoreState = true
                 }
             }
         )
@@ -177,11 +196,9 @@ fun BottomNavGroupInfoBar(navController: NavController, groupId: Int) {
                 navController.navigate("edit/${groupId}") {
                     navController.graph.startDestinationRoute?.let { route ->
                         popUpTo(route) {
-                            //saveState = true
                         }
                     }
                     launchSingleTop = true
-                    //restoreState = true
                 }
             }
         )

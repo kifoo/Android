@@ -29,6 +29,8 @@ interface Daos {
 //  Update
     @Update
     fun update(group: Group)
+    @Query("UPDATE groups_table SET enabled = :enabled WHERE id = :groupId")
+    fun updateGroupEnabled(enabled: Boolean, groupId: Int)
     @Update
     fun update(contact: Contact)
     @Update
@@ -62,13 +64,11 @@ interface Daos {
 
 //    Get Group By Condition
     @Transaction
-    @Query("SELECT * FROM groups_table WHERE :contentText LIKE '%' || contentText || '%'")
-    fun getGroupsByContext(contentText: String): Flow<List<Group>>
-    @Transaction
-    @Query("SELECT * FROM groups_table WHERE :phoneNumber = phoneNumber")
-    fun getGroupsByPhoneNumber(phoneNumber: String): Flow<List<Group>>
-    @Transaction
-    @Query("SELECT * FROM groups_table WHERE (:contentText LIKE '%' || contentText || '%') AND (:phoneNumber = phoneNumber)")
+    @Query("""
+        SELECT * FROM groups_table 
+        WHERE ((contentText != "") AND (:contentText LIKE '%' || contentText || '%')) 
+        OR ((phoneNumber != "") AND ('%' || :phoneNumber || '%' LIKE '%' || phoneNumber || '%'))
+    """)
     fun getGroupsByCondition(contentText: String, phoneNumber: String): Flow<List<Group>>
 
 //   Check if Contact Exists

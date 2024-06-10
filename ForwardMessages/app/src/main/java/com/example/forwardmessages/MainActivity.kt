@@ -1,52 +1,46 @@
 package com.example.forwardmessages
 
 import android.app.Activity
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.Telephony
 import android.telephony.SmsManager
-import android.telephony.SmsMessage
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.forwardmessages.ui.theme.ForwardMessagesTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
     }
 }
 
-class MainActivity : ComponentActivity() {
-    private lateinit var smsReceiver: BroadcastReceiver
+class MainActivity : ComponentActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
+    private lateinit var smsReceiver: SmsReceiver
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     var selectedContacts: MutableState<List<Contact>> = mutableStateOf(listOf())
+    var context: Context = this
 
     companion object {
         lateinit var daoDB: AppDatabase
@@ -59,11 +53,12 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             AppDatabase::class.java,
             "forward-messages-db"
-        )//.fallbackToDestructiveMigration()
-            //.addMigrations(MIGRATION_1_2)
+        ).fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_1_2)
             .build()
 
         // BroadcastReceiver to listen for incoming SMS
+        smsReceiver = SmsReceiver()
         registerSmsReceiver()
 
         setContent {
@@ -72,72 +67,69 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    // SMS RECEIVER FUNCTIONS
 
+    //  SMS RECEIVER FUNCTIONS
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 2) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, register the broadcast receiver
+                registerSmsReceiver()
+            } else {
+                // Permission denied, show an error message
+                runOnUiThread {
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
     fun hasSmsPermission(context: Context): Boolean {
         val readSmsPermission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
         val sendSmsPermission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
-        return readSmsPermission && sendSmsPermission
+        val receivedSmsPermission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
+        val readPhoneStatePermission = ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
+        return readSmsPermission && sendSmsPermission && receivedSmsPermission && readPhoneStatePermission
     }
 
     fun requestSmsPermission(activity: Activity) {
-        val permissions = arrayOf(android.Manifest.permission.READ_SMS, android.Manifest.permission.SEND_SMS)
+        val permissions = arrayOf(android.Manifest.permission.READ_SMS, android.Manifest.permission.SEND_SMS, android.Manifest.permission.RECEIVE_SMS, android.Manifest.permission.READ_PHONE_STATE)
         ActivityCompat.requestPermissions(activity, permissions, 2)
     }
 
     private fun registerSmsReceiver() {
-        // Check if the app has SMS permissions
-        if (!hasSmsPermission(this)) {
-            // Request SMS permissions if not
+        if(!hasSmsPermission(this)){
             requestSmsPermission(this)
         }
-        var senderNumber = mutableStateOf<String>("")
-        var messageBody = mutableStateOf<String>("")
-        smsReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (intent?.action == "android.provider.Telephony.SMS_RECEIVED") {
-                    Toast.makeText(context, "Message received", Toast.LENGTH_SHORT).show()
-                    Log.d("smsReceiver", "Message received")
-                    val bundle = intent.extras
-                    val pdus = bundle?.get("pdus") as Array<Any>
-                    val messages = arrayOfNulls<SmsMessage>(pdus.size)
-                    for (i in pdus.indices) {
-                        messages[i] = SmsMessage.createFromPdu(pdus[i] as ByteArray)
-                    }
-                    // Processing the incoming message
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        messages.forEach { message ->
-                            message?.let {
-                                senderNumber.value = message.displayOriginatingAddress
-                                messageBody.value = message.displayMessageBody
-                                Toast.makeText(context, "Message from $senderNumber: $messageBody", Toast.LENGTH_SHORT).show()
-                                processIncomingMessage(messageBody, senderNumber)
-                            }
-                        }
-                    }
-                }
-            }
+        else{
+            //val intentFilter = IntentFilter(android.provider.Telephony.RECEIVE_SMS)
+            val intentFilter = IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
+            registerReceiver(smsReceiver, intentFilter)
+            Toast.makeText(this, "SmsReceiver registered", Toast.LENGTH_SHORT).show()
         }
-        registerReceiver(smsReceiver, IntentFilter("android.provider.Telephony.SMS_RECEIVED"))
     }
 
-    private fun sendSms(phoneNumber: String, message: String) {
+    fun sendSms(phoneNumber: String, message: String) {
         val smsManager = SmsManager.getDefault()
         smsManager.sendTextMessage(phoneNumber, null, message, null, null)
-        Toast.makeText(this, "Message sent to $phoneNumber", Toast.LENGTH_SHORT).show()
+        runOnUiThread {
+            Toast.makeText(this, "Message sent to $phoneNumber", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // Handle exceptions in processIncomingMessage
-    private suspend fun processIncomingMessage(messageBody: MutableState<String>, senderNumber: MutableState<String>) {
+    suspend fun processIncomingMessage(messageBody: String, senderNumber: String) {
         try {
-            val groupsList = getGroupListByConditions(messageBody.value, senderNumber.value).first()
+            val groupsList = withContext(Dispatchers.IO) {
+                getGroupListByConditions(messageBody, senderNumber).first()
+            }
+            Log.d("processIncomingMessage", "Processing messages for ${groupsList.size} groups")
             // Send the message to the contacts in those groups
             groupsList.forEach { group ->
                 Log.d("processIncomingMessage", "Group: $group")
-                if(group.enabled) {
-                    val contacts = daoDB.databaseDao().getContactsByGroupId(group.id).first()
+                if (group.enabled) {
+                    val contacts = withContext(Dispatchers.IO) { daoDB.databaseDao().getContactsByGroupId(group.id).first() }
                     contacts.forEach { contact ->
-                        sendSms(contact.phoneNumber, messageBody.value)
+                        sendSms(contact.phoneNumber, messageBody)
                     }
                 }
             }
@@ -185,16 +177,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-
-
+    // Checking if permission is granted
     fun hasContactPermission(context: Context): Boolean {
-        // Checking if permission is present or not.
         return ContextCompat.checkSelfPermission(context, android.Manifest.permission.READ_CONTACTS) ==
                 PackageManager.PERMISSION_GRANTED;
     }
 
+    // Requesting permissions if permission is not granted.
     fun requestContactPermission(context: Context, activity: Activity) {
-        // Requesting permissions if permission is not granted.
         if (!hasContactPermission(context)) {
             ActivityCompat.requestPermissions(activity, arrayOf(android.Manifest.permission.READ_CONTACTS), 1)
         }
@@ -251,10 +241,6 @@ class MainActivity : ComponentActivity() {
     fun getGroupListByConditions(message: String, phoneNumber: String): Flow<List<Group>> {
         return if(phoneNumber != ""  && message !=""){
             daoDB.databaseDao().getGroupsByCondition(message, phoneNumber)
-        }else if (phoneNumber != "") {
-            daoDB.databaseDao().getGroupsByPhoneNumber(phoneNumber)
-        } else if (message != "") {
-            daoDB.databaseDao().getGroupsByContext(message)
         } else {
             null!!
         }
@@ -265,6 +251,16 @@ class MainActivity : ComponentActivity() {
     fun getContacts(groupId: Int): Flow<List<Contact>> = daoDB.databaseDao().getContactsByGroupId(groupId)
     private fun checkIfContactExists(contact: Contact): Flow<Boolean> = daoDB.databaseDao().checkIsContactExists(contact.name, contact.phoneNumber)
     private fun checkIfRelationshipExists(groupId: Int, contactId: String): Flow<Boolean> = daoDB.databaseDao().checkIfRelationshipExists(groupId, contactId)
+    fun updateGroupEnabled(group: Group, enabled: Boolean){
+        lifecycleScope.launch(Dispatchers.IO) {
+            daoDB.databaseDao().updateGroupEnabled(enabled, group.id)
+        }
+    }
+    fun updateGroup(group: Group){
+        lifecycleScope.launch(Dispatchers.IO) {
+            daoDB.databaseDao().update(group)
+        }
+    }
     fun deleteGroup(group: Group) {
         lifecycleScope.launch(Dispatchers.IO) {
             val relationships =
@@ -277,20 +273,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-@Composable
-fun MainScreen(activity: MainActivity) {
-    val navController = rememberNavController()
-    Scaffold(
-        content = { padding ->
-            Box(modifier = Modifier
-                .padding(padding)
-                .background(colorResource(id = R.color.LightBrown3))
-            ) {
-                Navigation(navController = navController, activity = activity)
-            }
-        },
-        modifier = Modifier
-            .fillMaxSize()
-    )
-}
