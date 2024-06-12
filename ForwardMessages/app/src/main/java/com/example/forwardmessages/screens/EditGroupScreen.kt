@@ -1,5 +1,7 @@
 package com.example.forwardmessages
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -105,29 +107,30 @@ fun EditGroupInfo(activity: MainActivity, navController: NavHostController, grou
                 }
                 Row(){
                     Button(onClick = {
-                        val newGroup = Group(id = group.id, name = groupName.uppercase(), phoneNumber = phoneNumber, contentText = messageCharacters, enabled = group.enabled)
-                        activity.updateGroup(group = newGroup)
-                        navController.navigate("home") {
-                            navController.graph.startDestinationRoute?.let { route ->
-                                popUpTo(route) {
+                        if (groupName != "") {
+                            val newGroup = Group(
+                                id = group.id,
+                                name = groupName.uppercase(),
+                                phoneNumber = phoneNumber,
+                                contentText = messageCharacters,
+                                enabled = group.enabled
+                            )
+                            activity.updateGroup(group = newGroup)
+                            navController.navigate("home") {
+                                navController.graph.startDestinationRoute?.let { route ->
+                                    popUpTo(route) {
+                                    }
                                 }
+                                launchSingleTop = true
                             }
-                            launchSingleTop = true
+                        }
+                        else{
+                            // Show error message
+                            Log.d("AddGroupScreen", "Group name is empty")
+                            Toast.makeText(activity.applicationContext, "Please enter group Name", Toast.LENGTH_SHORT).show()
                         }
                     }){Text("Save Changes")}
                 }
-//                Row(){
-//                    Button(onClick = {
-//                        activity.deleteGroup(group = group)
-//                        navController.navigate("home") {
-//                            navController.graph.startDestinationRoute?.let { route ->
-//                                popUpTo(route) {
-//                                }
-//                            }
-//                            launchSingleTop = true
-//                        }
-//                    }){Text("Delete Group")}
-//                }
             }
         }
     }

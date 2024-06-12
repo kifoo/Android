@@ -1,6 +1,7 @@
 package com.example.forwardmessages
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -222,11 +223,18 @@ fun AddGroupForm(activity: MainActivity,
                 ) {
                     IconButton(
                         onClick = {
-                            val newContact =
-                                Contact(contactManualName.value, contactManualNumber.value)
-                            activity.selectedContacts.value += newContact
-                            contactManualName.value = ""
-                            contactManualNumber.value = ""
+                            if((contactManualName.value != "") and (contactManualNumber.value != "")) {
+                                val newContact =
+                                    Contact(contactManualName.value, contactManualNumber.value)
+                                activity.selectedContacts.value += newContact
+                                contactManualName.value = ""
+                                contactManualNumber.value = ""
+                            }
+                            else{
+                                // Show error message
+                                Log.d("AddGroupScreen", "Group name is empty")
+                                Toast.makeText(activity.applicationContext, "Please enter cntact info", Toast.LENGTH_SHORT).show()
+                            }
                         },
                         modifier = Modifier.padding(8.dp),
                         colors = IconButtonDefaults.iconButtonColors(
@@ -319,21 +327,29 @@ fun BottomNavigationAddGroupBar(activity: MainActivity,
             alwaysShowLabel = true,
             selected = currentRoute == "home",
             onClick = {
-                // Add to database
-                activity.addGroupToDatabase(groupName.value, phoneNumber.value, messageCharacters.value, activity.selectedContacts.value)
-                // Clear parameters
-//                groupName.value = ""
-//                phoneNumber.value = ""
-//                messageCharacters.value = ""
-                // Go to home screen
-                navController.navigate("home") {
-                    navController.graph.startDestinationRoute?.let { route ->
-                        popUpTo(route) {
-                            saveState = true
+                if(groupName.value != "") {
+                    // Add to database
+                    activity.addGroupToDatabase(
+                        groupName.value,
+                        phoneNumber.value,
+                        messageCharacters.value,
+                        activity.selectedContacts.value
+                    )
+                    // Go to home screen
+                    navController.navigate("home") {
+                        navController.graph.startDestinationRoute?.let { route ->
+                            popUpTo(route) {
+                                saveState = true
+                            }
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                    launchSingleTop = true
-                    restoreState = true
+                }
+                else{
+                    // Show error message
+                    Log.d("AddGroupScreen", "Group name is empty")
+                    Toast.makeText(activity.applicationContext, "Please enter group Name", Toast.LENGTH_SHORT).show()
                 }
             }
         )
